@@ -1,0 +1,20 @@
+{
+    "name": "pmvc-plugin/paint",
+    "description": "PMVC Image Paint Library",
+    "type": "library",
+    "homepage": "https://github.com/pmvc/pmvc",
+    "keywords": ["paint", "pmvc", "plug-in"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hill",
+            "email": "hill@kimo.com"
+        }
+    ],
+    "require": {
+        "pmvc/pmvc": "*",
+        "pmvc-plugin/image": "*",
+        "pmvc-plugin/color": "*"
+    },
+    "minimum-stability": "dev"
+}
