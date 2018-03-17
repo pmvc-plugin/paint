@@ -17,49 +17,38 @@ class ImagePaint
     {
         $this->im = \PMVC\plug('image')->create($input);
     }
-
-    public function __destruct()
-    {
-        imagedestroy($this->im);
-        $this->im = null;
-    }
  
     public function getPixel(Coord2D $point)
     {
-        $rgb = imagecolorat($this->im, $point->x, $point->y);
-        $red = ($rgb >> 16) & 0xff;
-        $green = ($rgb >> 8) & 0xff;
-        $blue = $rgb & 0xff;
-        $color = \PMVC\plug('color');
-        return $color->getColor($red, $green, $blue);
+        return $this->im->getPixel($point);
     }
         
     public function setPixel(Coord2D $point, BaseColor $color)
     {
-        imagesetpixel($this->im, $point->x, $point->y, $color->toGd($this->im));
+        return $this->im->setPixel($point, $color);
     }
         
     public function fillRect(Coord2D $point, ImageSize $size, BaseColor $color)
     {
         imagefilledrectangle(
-            $this->im,
+            $this->toGd(),
             $point->x,
             $point->y,
             $point->x + $size->w,
             $point->y + $size->h,
-            $color->toGd($this->im)
+            $color->toGd($this->toGd())
         );
     }
 
     public function fillCircle(Coord2D $point, $radius, BaseColor $color)
     {
         imagefilledellipse(
-            $this->im, 
+            $this->toGd(), 
             $point->x, 
             $point->y, 
             $radius * 2, 
             $radius * 2, 
-            $color->toGd($this->im)
+            $color->toGd($this->toGd())
         );
     }
 
@@ -90,12 +79,12 @@ class ImagePaint
     {
         $fontfile = \PMVC\plug('image')->getResource('Slabo13px-Regular.ttf');
         imagettftext ( 
-            $this->im , 
+            $this->toGd(), 
             $size , 
             $angle , 
             $point->x , 
             $point->y , 
-            $color->toGd($this->im) , 
+            $color->toGd($this->toGd()) , 
             $fontfile , 
             $text
         );
@@ -103,6 +92,6 @@ class ImagePaint
 
     public function toGd()
     {
-        return $this->im;
+        return $this->im->toGd();
     }
 }

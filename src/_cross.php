@@ -4,6 +4,8 @@ namespace PMVC\PlugIn\paint;
 use PMVC\PlugIn\image\ImageSize;
 use PMVC\PlugIn\image\Coord2D;
 
+${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\Cross';
+
 class Cross
 {
     const left='left';
