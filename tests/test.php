@@ -1,11 +1,9 @@
 <?php
 namespace PMVC\PlugIn\paint;
-use PHPUnit_Framework_TestCase;
 
-\PMVC\Load::plug();
-\PMVC\addPlugInFolders(['../']);
+use PMVC\TestCase;
 
-class PaintTest extends PHPUnit_Framework_TestCase
+class PaintTest extends TestCase
 {
     private $_plug = 'paint';
     function testPlugin()
@@ -14,7 +12,7 @@ class PaintTest extends PHPUnit_Framework_TestCase
         print_r(\PMVC\plug($this->_plug));
         $output = ob_get_contents();
         ob_end_clean();
-        $this->assertContains($this->_plug,$output);
+        $this->haveString($this->_plug,$output);
     }
 
     /**
