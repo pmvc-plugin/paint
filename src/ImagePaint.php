@@ -9,7 +9,7 @@ use PMVC\PlugIn\color\BaseColor;
 class ImagePaint
 {
     private $im = null;
-        
+
     /**
      * @param mixed $input ImageFile (for real file) or ImageSize (for empty page)
      */
@@ -17,17 +17,17 @@ class ImagePaint
     {
         $this->im = \PMVC\plug('image')->create($input);
     }
- 
+
     public function getPixel(Coord2D $point)
     {
         return $this->im->getPixel($point);
     }
-        
+
     public function setPixel(Coord2D $point, BaseColor $color)
     {
         return $this->im->setPixel($point, $color);
     }
-        
+
     public function fillRect(Coord2D $point, ImageSize $size, BaseColor $color)
     {
         imagefilledrectangle(
@@ -43,18 +43,20 @@ class ImagePaint
     public function fillCircle(Coord2D $point, $radius, BaseColor $color)
     {
         imagefilledellipse(
-            $this->toGd(), 
-            $point->x, 
-            $point->y, 
-            $radius * 2, 
-            $radius * 2, 
+            $this->toGd(),
+            $point->x,
+            $point->y,
+            $radius * 2,
+            $radius * 2,
             $color->toGd($this->toGd())
         );
     }
 
     public function paintCross(Coord2D $point, BaseColor $color, $size)
     {
-        $points = \PMVC\plug('paint')->cross()->getPoints($point, $size);
+        $points = \PMVC\plug('paint')
+            ->cross()
+            ->getPoints($point, $size);
         foreach ($points->points as $p) {
             $this->setPixel($p, $color);
         }
@@ -63,29 +65,39 @@ class ImagePaint
     public function overlayPixel(Coord2D $point, BaseColor $color, $alpha)
     {
         $existing = $this->getPixel($point);
-        $newColor = $color->getClone()->setAlpha($existing,$alpha);
+        $newColor = $color->getClone()->setAlpha($existing, $alpha);
         $this->setPixel($point, $newColor);
     }
 
-    public function overlayRect(Coord2D $point, ImageSize $size, BaseColor $color, $alpha)
-    {
-        $self = $this;
-        \PMVC\plug('image')->process($point,$size,array($color,$alpha),function($point,$color,$alpha) use($self) {
-            $self->overlayPixel($point, $color, $alpha);
-        });
+    public function overlayRect(
+        Coord2D $point,
+        ImageSize $size,
+        BaseColor $color,
+        $alpha
+    ) {
+        \PMVC\plug('image')->process($size, function (
+            $point,
+        ) use ($color, $alpha) {
+            $this->overlayPixel($point, $color, $alpha);
+        }, $point);
     }
 
-    public function text($text, Coord2D $point, BaseColor $color, $size=13, $angle=1) 
-    {
+    public function text(
+        $text,
+        Coord2D $point,
+        BaseColor $color,
+        $size = 13,
+        $angle = 1
+    ) {
         $fontfile = \PMVC\plug('image')->getResource('Slabo13px-Regular.ttf');
-        imagettftext ( 
-            $this->toGd(), 
-            $size , 
-            $angle , 
-            $point->x , 
-            $point->y , 
-            $color->toGd($this->toGd()) , 
-            $fontfile , 
+        imagettftext(
+            $this->toGd(),
+            $size,
+            $angle,
+            $point->x,
+            $point->y,
+            $color->toGd($this->toGd()),
+            $fontfile,
             $text
         );
     }
